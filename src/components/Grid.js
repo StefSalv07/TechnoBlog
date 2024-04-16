@@ -1,9 +1,9 @@
+import Card from "./Card";
+
 export default function Grid(props) {
     const data = props.data;
-    const blogs = data.map((blog) => 
-        <div key={blog.id}>
-            {blog.title}
-        </div>
+    const blogs = data.map((blog) =>
+        <Card key={blog.id} data={blog} />
     );
 
     return (
