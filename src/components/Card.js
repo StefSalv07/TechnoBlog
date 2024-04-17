@@ -1,10 +1,5 @@
 export default function Card(props) {
-    const data = {
-        title: "Noteworthy technology acquisitions 2021",
-        summary: "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-        author: "author",
-        category: "category",
-    };
+    const data = props.data;
     const title = data?.title;
     const summary = data?.summary;
     const author = data?.author;
