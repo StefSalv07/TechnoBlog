@@ -2,8 +2,8 @@ export default function Card(props) {
     const data = props.data;
     const title = data?.title;
     const summary = data?.summary;
-    const author = data?.author;
-    const category = data?.category;
+    const author = data?.authorName;
+    const categories = data?.categories.join(", ");
     const content = data?.content;
 
     const handleDownload = () => {
@@ -29,7 +29,7 @@ export default function Card(props) {
                 </p>
                 <p className="">
                     <span className="font-semibold">Category: </span>
-                    {category}
+                    {categories}
                 </p>
             </div>
             <div className="flex justify-end mt-3">
