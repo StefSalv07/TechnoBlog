@@ -20,7 +20,31 @@ export default async function handler(req, res) {
             const db = client.db('TechnoBlog');
             const userCollection = db.collection('User');
             const user = await userCollection.findOne({ email, password });
+            if (isSignUp == 'true') {
+                const existingUser = await userCollection.findOne({ email });
+                if (existingUser) {
+                    return res.status(409).json({ message: 'User already exists' });
+                }
 
+                const isValidEmail = (email) => {
+                    const regex = /^(2[0-9]{3}|[3-9][0-9]{3})\d*@daiict\.ac\.in$/;
+                    return regex.test(email);
+                };
+
+                if (!isValidEmail(email)) {
+                    return res.status(410).json({ message: 'Not DAIICT email.' });
+                }
+
+                const newUser = await userCollection.insertOne({ email, password, name: username, type: "author" });
+                const registeredUser = await userCollection.findOne({ _id: newUser.insertedId });
+                return res.status(201).json(registeredUser);
+            } else {
+                const user = await userCollection.findOne({ email, password });
+                if (!user) {
+                    return res.status(404).json({ message: 'User not found or password does not match' });
+                }
+                res.status(200).json(user);
+            }
             res.status(200).json(user);
         } catch (err) {
             console.error(err);
