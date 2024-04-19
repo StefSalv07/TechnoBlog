@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import NavBar from '@/components/NavBar';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -9,6 +9,7 @@ export default function Review(props) {
     const { data: session, status } = useSession();
     const [blogData, setBlogData] = useState(null);
     const [error, setError] = useState(null);
+    const reviewRef = useRef(null)
 
     useEffect(() => {
         async function fetchBlogData() {
@@ -39,6 +40,31 @@ export default function Review(props) {
         return <div></div>;
     }
 
+    const handleSubmit = async () => {
+        const userEmail = session.user.email;
+        const reviewContent = reviewRef.current.value;
+        const submitReview = true;
+
+        const queryParams = new URLSearchParams({
+            blogId,
+            userEmail,
+            content: reviewContent,
+            submitReview,
+        });
+
+        try {
+            const response = await fetch(`/api/articles?${queryParams}`);
+            if (!response.ok) {
+                throw new Error('Failed to send data');
+            }
+            const responseData = await response.json();
+            console.log('Response:', responseData);
+            router.push("/");
+        } catch (error) {
+            console.error('Error sending data:', error);
+        }
+    };
+
     return (
         <>
             <NavBar />
@@ -59,9 +85,10 @@ export default function Review(props) {
                 <textarea
                     id="reviewInput"
                     rows="4"
+                    ref={reviewRef}
                     className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                 />
-                <button onClick={() => null} type="button" className="mt-2 py-2 px-3 inline-flex items-center text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-gray-700 focus:z-10 focus:ring-4 focus:ring-gray-100">
+                <button onClick={() => handleSubmit()} type="button" className="mt-2 py-2 px-3 inline-flex items-center text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-gray-700 focus:z-10 focus:ring-4 focus:ring-gray-100">
                     Submit
                 </button>
             </div>

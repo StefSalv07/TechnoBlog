@@ -17,14 +17,47 @@ export default async function handler(req, res) {
         return;
     }
 
-    const { blogId } = req.query;
+    const { blogId, userEmail, content, submitReview } = req.query;
+    if (submitReview == "true") {
+        try {
+            await client.connect();
+            const db = client.db('TechnoBlog');
+            const userCollection = db.collection('User');
+            const reviewCollection = db.collection('Review');
+            const reviewer = await userCollection.findOne({ email: userEmail });
+            const newReview = {
+                articleId: new ObjectId(blogId),
+                reviewerId: reviewer._id,
+                review: content,
+            };
+            const reviewResult = await reviewCollection.insertOne(newReview);
+            const reviewId = reviewResult.insertedId;
+
+            const articleCollection = db.collection('Article');
+            await articleCollection.updateOne(
+                { _id: new ObjectId(blogId) },
+                {
+                    $push: { reviewsId: reviewId },
+                    $pull: { reviewersId: reviewer._id }
+                }
+            );
+
+            res.status(200).json({ message: 'Review submitted successfully', reviewId: reviewId });
+        } catch (err) {
+            console.error('Error submitting review:', err);
+            res.status(500).json({ message: 'Failed to submit review' });
+        } finally {
+            await client.close();
+        }
+        return;
+    }
 
     if (blogId) {
         try {
             await client.connect();
             const db = client.db('TechnoBlog');
             const articleCollection = db.collection('Article');
-            const article = await articleCollection.find({ _id: new ObjectId(blogId)}).toArray();
+            const article = await articleCollection.find({ _id: new ObjectId(blogId) }).toArray();
             res.status(200).json(article);
         }
         catch (err) {
