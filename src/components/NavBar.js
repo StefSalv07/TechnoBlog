@@ -1,4 +1,5 @@
 import { signIn, signOut, useSession } from "next-auth/react";
+const mail = process.env.EMAIL;
 
 export default function NavBar(props) {
     const { data: session, status } = useSession();
@@ -9,6 +10,16 @@ export default function NavBar(props) {
         else {
             signOut();
         };
+    };
+
+    const handlePostLink = () => {
+        if (status == 'unauthenticated') {
+            signIn();
+        } else {
+            if (session.user.type == 'author') {
+                window.location.href = `mailto:${mail}`;
+            }
+        }
     };
 
     return (
@@ -28,7 +39,7 @@ export default function NavBar(props) {
                             <a href="/" className="block py-2 px-3 text-black rounded   md:hover:text-gray-700 md:p-0">Home</a>
                         </li>
                         <li>
-                            <a href="#" className="block py-2 px-3 text-black rounded  md:hover:text-gray-700 md:p-0">Post</a>
+                            <a onClick={handlePostLink} className="block py-2 px-3 text-black rounded  md:hover:text-gray-700 md:p-0 hover:cursor-pointer">Post</a>
                         </li>
                         <li>
                             <a href="#" className="block py-2 px-3 text-black rounded  md:hover:text-gray-700 md:p-0">About</a>
