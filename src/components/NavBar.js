@@ -38,9 +38,11 @@ export default function NavBar(props) {
                         <li>
                             <a href="/" className="block py-2 px-3 text-black rounded   md:hover:text-gray-700 md:p-0">Home</a>
                         </li>
-                        <li>
-                            <a onClick={handlePostLink} className="block py-2 px-3 text-black rounded  md:hover:text-gray-700 md:p-0 hover:cursor-pointer">Post</a>
-                        </li>
+                        {(status == 'authenticated' && session.user.type == 'author') || status == 'unauthenticated' ?
+                            <li>
+                                <a onClick={handlePostLink} className="block py-2 px-3 text-black rounded  md:hover:text-gray-700 md:p-0 hover:cursor-pointer">Post</a>
+                            </li>
+                            : null}
                         <li>
                             <a href="#" className="block py-2 px-3 text-black rounded  md:hover:text-gray-700 md:p-0">About</a>
                         </li>
