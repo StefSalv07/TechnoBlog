@@ -1,8 +1,10 @@
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 const mail = process.env.EMAIL;
 
 export default function NavBar(props) {
     const { data: session, status } = useSession();
+    const router = useRouter();
 
     const handleLogin = () => {
         if (status == 'unauthenticated')
@@ -20,6 +22,10 @@ export default function NavBar(props) {
                 window.location.href = `mailto:${mail}`;
             }
         }
+    };
+
+    const handleUploadLink = () => {
+        router.push("/upload");
     };
 
     return (
@@ -41,6 +47,11 @@ export default function NavBar(props) {
                         {(status == 'authenticated' && session.user.type == 'author') || status == 'unauthenticated' ?
                             <li>
                                 <a onClick={handlePostLink} className="block py-2 px-3 text-black rounded  md:hover:text-gray-700 md:p-0 hover:cursor-pointer">Post</a>
+                            </li>
+                            : null}
+                        {(status == 'authenticated' && session.user.type == 'editor') ?
+                            <li>
+                                <a onClick={handleUploadLink} className="block py-2 px-3 text-black rounded  md:hover:text-gray-700 md:p-0 hover:cursor-pointer">Upload</a>
                             </li>
                             : null}
                         <li>
