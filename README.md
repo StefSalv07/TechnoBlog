@@ -41,4 +41,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 presentation link:
 
-https://shorturl.at/entO7
+https://www.canva.com/design/DAGDPukuBgs/M2zLxVjFiKDDUYGw3HU9Og/view?utm_content=DAGDPukuBgs&utm_campaign=designshare&utm_medium=link&utm_source=editor
